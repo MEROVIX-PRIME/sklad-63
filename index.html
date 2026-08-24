@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Рыболовные товары, автозапчасти и упаковка оптом в Сызрани — распродажа склада</title>
+<meta name="description" content="Распродажа склада в Сызрани: рыболовные товары и снасти, автозапчасти ВАЗ, упаковочные материалы (скотч, плёнка, коробки) и хозтовары — опт и мелкий опт по низким ценам. Скидки на крупные заказы, доставка по Сызрани и транспортными компаниями.">
+<meta name="keywords" content="рыболовные товары Сызрань, снасти оптом Сызрань, автозапчасти ВАЗ Сызрань, упаковочные материалы оптом, скотч плёнка коробки Сызрань, склад распродажа Сызрань, хозтовары оптом">
+<meta property="og:title" content="Рыболовные товары, автозапчасти и упаковка оптом в Сызрани — распродажа склада">
+<meta property="og:description" content="Ликвидация остатков склада в Сызрани: рыболовные снасти, автозапчасти ВАЗ, упаковочные материалы и хозтовары. Опт и мелкий опт по низким ценам.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://sklad-opt63.netlify.app/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sklad-opt63.netlify.app/og-image.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Склад-распродажа",
+  "url": "https://sklad-opt63.netlify.app",
+  "description": "Распродажа остатков склада в Сызрани: рыболовные товары, автозапчасти ВАЗ, упаковочные материалы, хозтовары и оборудование. Продажа оптом и мелким оптом.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Сызрань",
+    "addressCountry": "RU"
+  },
+  "telephone": "+79967323696",
+  "priceRange": "₽₽"
+}
+</script>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand"><span class="tag-dot">🎣</span><span id="shopName">СКЛАД-РАСПРОДАЖА</span></div>
+    <div class="header-search">
+      <input type="text" id="searchInput" placeholder="Поиск по названию товара...">
+    </div>
+    <div class="header-contacts">
+      <a id="contactPhone" href="tel:"></a>
+      <a id="contactEmail" href="mailto:"></a>
+    </div>
+    <button class="price-btn" id="priceBtn">📄 Скачать прайс</button>
+    <button class="cart-btn" id="cartBtn">
+      🛒 Заявка <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+<div class="hazard"></div>
+
+<section class="hero">
+  <svg class="hero-hook" viewBox="0 0 120 200" aria-hidden="true">
+    <path d="M60 10 L60 130 Q60 170 95 170 Q125 170 122 140" fill="none" stroke="currentColor" stroke-width="4"/>
+    <circle cx="60" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="4"/>
+  </svg>
+  <svg class="hero-fish" viewBox="0 0 200 100" aria-hidden="true">
+    <path d="M10 50 Q40 15 100 30 Q150 40 190 20 Q175 50 190 80 Q150 60 100 70 Q40 85 10 50 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+    <circle cx="95" cy="42" r="3" fill="currentColor"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">🎣 Ликвидация остатков склада в Сызрани</div>
+    <h1>Всё должно уйти — <span>цены ниже некуда</span></h1>
+    <p>Продажа оптом и мелким оптом напрямую со склада в Сызрани: рыболовные товары, хозтовары, автотовары, упаковка и оборудование. Количество ограничено — что продано, то продано.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">Мин. заказ — <b id="minOrderNote">20 000</b> ₽</div>
+      <div class="hero-stat">Бесплатная доставка по городу от <b id="freeDeliveryNote">70 000</b> ₽</div>
+      <div class="hero-stat">Скидки до <b>5%</b> при крупном заказе</div>
+    </div>
+  </div>
+</section>
+<div class="wave-divider">
+  <svg viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,30 C150,60 350,0 600,30 C850,60 1050,0 1200,30 L1200,60 L0,60 Z" fill="currentColor"/>
+  </svg>
+</div>
+<div class="cat-nav" id="catNav"></div>
+
+<div class="container">
+  <div class="product-grid" id="productGrid"></div>
+</div>
+
+<div class="wave-divider footer-wave">
+  <svg viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,30 C150,0 350,60 600,30 C850,0 1050,60 1200,30 L1200,60 L0,60 Z" fill="currentColor"/>
+  </svg>
+</div>
+<footer>
+  <svg class="footer-hook" viewBox="0 0 120 200" aria-hidden="true">
+    <path d="M60 10 L60 130 Q60 170 95 170 Q125 170 122 140" fill="none" stroke="currentColor" stroke-width="4"/>
+    <circle cx="60" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="4"/>
+  </svg>
+  <div class="footer-inner">
+    <div>
+      <div class="brand" id="footerShopName">🎣 СКЛАД-РАСПРОДАЖА</div>
+      <div>Продажа оптом и мелким оптом, г. Сызрань</div>
+      <div>Связаться: WhatsApp / Telegram по указанному телефону</div>
+    </div>
+    <div>
+      <div>Телефон: <a id="footerPhoneCopy" href="#" onclick="return false;"></a></div>
+      <div>Товар и остатки актуальны на момент публикации сайта.</div>
+    </div>
+  </div>
+  <p class="footer-seo-text">
+    Рыболовные товары в Сызрани: катушки, крючки, жерлицы, приманки и снасти для зимней и летней рыбалки —
+    оптом и мелким оптом со склада. Автозапчасти ВАЗ (HOFER и другие бренды): фильтры, ремкомплекты ШРУСов,
+    щётки стеклоочистителя, регуляторы холостого хода. Упаковочные материалы оптом: картонные коробки,
+    скотч, стрейч-плёнка, воздушно-пузырчатая плёнка и пакеты zip-lock — для магазинов и складов Сызрани
+    и области.
+  </p>
+</footer>
+
+<!-- ===== Cart Drawer ===== -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>Ваша заявка</h2>
+    <button class="drawer-close" id="drawerClose">×</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <div class="summary-row"><span>Сумма товаров</span><span id="summarySubtotal">0 ₽</span></div>
+    <div class="summary-row" id="summaryDiscountRow" style="display:none;"><span>Скидка</span><span id="summaryDiscount"></span></div>
+    <div class="summary-row total"><span>Итого</span><span id="summaryTotal">0 ₽</span></div>
+    <button class="checkout-btn" id="checkoutBtn" disabled>Оформить заявку</button>
+  </div>
+</aside>
+
+<!-- ===== Checkout Modal ===== -->
+<div class="modal-overlay" id="checkoutOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Оформление заявки</h2>
+      <button class="modal-close" id="checkoutClose">×</button>
+    </div>
+    <div class="modal-body">
+
+      <form id="checkoutForm">
+        <div class="form-row">
+          <label>Имя <span class="req">*</span></label>
+          <input type="text" id="custName" required>
+        </div>
+        <div class="form-row">
+          <label>Телефон <span class="req">*</span></label>
+          <input type="tel" id="custPhone" required placeholder="+7 ___ ___-__-__">
+        </div>
+        <div class="form-row">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="custEmail" required>
+        </div>
+
+        <div class="form-row">
+          <label>Способ получения</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="delivery" value="pickup" checked> Самовывоз</label>
+            <label class="radio-option"><input type="radio" name="delivery" value="city"> Доставка по городу</label>
+            <label class="radio-option"><input type="radio" name="delivery" value="tk"> Транспортная компания (другой город)</label>
+          </div>
+          <div class="hint" id="cityNote" style="display:none;">Бесплатно при заказе от <span id="freeDeliveryNote2"></span> ₽, иначе стоимость доставки уточняется при звонке.</div>
+        </div>
+
+        <div class="form-row" id="tkFieldBox" style="display:none;">
+          <label>Выберите транспортную компанию</label>
+          <select id="tkSelect"></select>
+          <div class="hint">Доставку через ТК оплачивает покупатель по тарифам компании (кроме случаев ниже).</div>
+        </div>
+
+        <div class="form-row" id="benefitChoiceBox" style="display:none;">
+          <label>При заказе от такой суммы — выберите один бонус</label>
+          <div class="radio-group">
+            <label class="radio-option selected"><input type="radio" name="benefit" value="discount" checked> Скидка 5% на заказ</label>
+            <label class="radio-option"><input type="radio" name="benefit" value="freeTk"> Бесплатная доставка транспортной компанией</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Комментарий к заказу</label>
+          <textarea id="custComment" placeholder="Необязательно"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Отправить заявку</button>
+        <div class="form-error" id="formError"></div>
+      </form>
+
+      <div class="success-view" id="successView" style="display:none;">
+        <div class="icon">✓</div>
+        <h3>Заявка отправлена</h3>
+        <p>Спасибо! Я свяжусь с вами в ближайшее время для подтверждения заказа и деталей оплаты.</p>
+        <p class="hint">Если не ответим в течение 24 часов — лучше позвонить или написать в WhatsApp/Telegram по телефону <b id="successPhone"></b>.</p>
+        <button class="checkout-btn" id="successCloseBtn">Закрыть</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== Product Detail Modal ===== -->
+<div class="modal-overlay" id="productModalOverlay">
+  <div class="modal product-modal">
+    <div class="modal-header">
+      <h2>Товар</h2>
+      <button class="modal-close" id="productModalClose">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="product-modal-grid">
+        <div class="product-modal-img">
+          <img id="modalImg" src="" alt="">
+        </div>
+        <div class="product-modal-info">
+          <div class="card-cat" id="modalCat"></div>
+          <h3 id="modalName"></h3>
+          <div class="modal-badges" id="modalBadges"></div>
+          <div class="card-price" id="modalPrice"></div>
+          <p id="modalDescription" class="modal-description"></p>
+          <div id="modalSpecsSection" style="display:none;">
+            <h4 class="modal-specs-title">Характеристики</h4>
+            <div id="modalSpecs"></div>
+          </div>
+          <a id="modalMorePhotos" class="card-more" href="#" target="_blank" rel="noopener">Больше фото на Яндекс.Диске →</a>
+          <div class="modal-add-row">
+            <div class="qty-stepper" id="modalQtyBox">
+              <button type="button" id="modalStepMinus">−</button>
+              <input type="number" min="1" value="1" id="modalQtyInput">
+              <button type="button" id="modalStepPlus">+</button>
+            </div>
+            <button class="add-btn" id="modalAddBtn">Добавить в заявку</button>
+          </div>
+          <div class="in-cart-tag" id="modalInCart"></div>
+        </div>
+      </div>
+
+      <div class="similar-section" id="similarSection" style="display:none;">
+        <h4>Похожие товары</h4>
+        <div class="similar-grid" id="similarGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

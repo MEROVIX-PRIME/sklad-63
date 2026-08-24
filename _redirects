@@ -1,0 +1,2 @@
+# Redirect old Netlify domain to new custom domain
+https://sklad-opt63.netlify.app/* https://sklad-63.ru/:splat 301!
