@@ -79,7 +79,7 @@ button{font-family:inherit;cursor:pointer;}
   padding:10px 14px;
   border-radius:999px;
   border:none;
-  font-size:14px;
+  font-size:16px;
   font-family:inherit;
   outline:none;
 }
@@ -376,7 +376,7 @@ button{font-family:inherit;cursor:pointer;}
   width:48px;
   border:none;
   text-align:center;
-  font-size:13px;
+  font-size:16px;
   font-family:inherit;
   padding:0;
 }
@@ -509,7 +509,7 @@ button{font-family:inherit;cursor:pointer;}
 .form-row .req{color:var(--red);}
 .form-row input, .form-row select, .form-row textarea{
   width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;
-  font-family:inherit;font-size:14px;background:#fff;
+  font-family:inherit;font-size:16px;background:#fff;
 }
 .form-row textarea{resize:vertical;min-height:60px;}
 .radio-group{display:flex;flex-direction:column;gap:8px;}
