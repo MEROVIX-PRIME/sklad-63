@@ -3,7 +3,7 @@
    ========================================================= */
 const CONFIG = {
   // Эндпоинт для отправки заявок (FormSubmit.co — безлимитные отправки, без регистрации)
-  FORM_ENDPOINT: "https://formsubmit.co/ajax/jaks8@list.ru",
+  FORM_ENDPOINT: "https://formsubmit.co/ajax/919vin@gmail.com",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
