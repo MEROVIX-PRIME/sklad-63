@@ -2,8 +2,8 @@
    НАСТРОЙКИ МАГАЗИНА — редактируйте здесь
    ========================================================= */
 const CONFIG = {
-  // Эндпоинт для отправки заявок (FormSubmit.co — безлимитные отправки, без регистрации)
-  FORM_ENDPOINT: "https://formsubmit.co/ajax/919vin@gmail.com",
+  // Эндпоинт для отправки заявок (Formspree)
+  FORM_ENDPOINT: "https://formspree.io/f/mgawanvg",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
@@ -602,19 +602,17 @@ async function submitOrder(e) {
       body: JSON.stringify({
         name,
         phone,
-        _replyto: email,
+        email,
         message,
         _subject: `Заказ с сайта — ${fmt(total)} ₽ (${name})`,
-        _captcha: "false",
-        _template: "table",
       }),
     });
 
     if (!res.ok) throw new Error("submit failed: " + res.status);
 
     const data = await res.json().catch(() => null);
-    if (data && data.success === "false") {
-      throw new Error(data.message || "Сервис отклонил отправку");
+    if (data && data.ok === false) {
+      throw new Error(data.error || "Сервис отклонил отправку");
     }
 
     document.getElementById("checkoutForm").style.display = "none";
