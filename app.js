@@ -595,8 +595,6 @@ async function submitOrder(e) {
   submitBtn.disabled = true;
   submitBtn.textContent = "Отправка...";
 
-  /* ▼▼▼ ДИАГНОСТИКА — временный блок, удалить после отладки ▼▼▼ */
-  const t0 = performance.now();
   try {
     const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
@@ -612,15 +610,12 @@ async function submitOrder(e) {
       }),
     });
 
-    const elapsed = Math.round(performance.now() - t0);
-    let bodyText = "";
-    try { bodyText = await res.text(); } catch (_) { bodyText = "(не удалось прочитать тело)"; }
-
-    const diagMsg = `ДИАГНОСТИКА:\nСтатус: ${res.status} ${res.statusText}\nВремя: ${elapsed} мс\nURL: ${CONFIG.FORM_ENDPOINT}\nОтвет: ${bodyText}`;
-    console.log(diagMsg);
-    alert(diagMsg);
-
     if (!res.ok) throw new Error("submit failed: " + res.status);
+
+    const data = await res.json().catch(() => null);
+    if (data && data.success === "false") {
+      throw new Error(data.message || "Сервис отклонил отправку");
+    }
 
     document.getElementById("checkoutForm").style.display = "none";
     document.getElementById("successView").style.display = "block";
@@ -629,11 +624,6 @@ async function submitOrder(e) {
     renderCart();
     renderGrid();
   } catch (err) {
-    const elapsed = Math.round(performance.now() - t0);
-    const diagErr = `ДИАГНОСТИКА ОШИБКИ:\nОшибка: ${err.message}\nВремя: ${elapsed} мс\nURL: ${CONFIG.FORM_ENDPOINT}`;
-    console.error(diagErr);
-    alert(diagErr);
-
     errorBox.textContent =
       "Не удалось отправить заявку автоматически. Пожалуйста, позвоните или напишите нам напрямую: " +
       CONFIG.CONTACT_PHONE;
@@ -642,7 +632,6 @@ async function submitOrder(e) {
     submitBtn.disabled = false;
     submitBtn.textContent = "Отправить заявку";
   }
-  /* ▲▲▲ ДИАГНОСТИКА — временный блок, удалить после отладки ▲▲▲ */
 }
 
 /* ---------- Скачать прайс (генерация Excel в браузере) ---------- */
