@@ -595,6 +595,17 @@ async function submitOrder(e) {
   submitBtn.disabled = true;
   submitBtn.textContent = "Отправка...";
 
+  /* ▼▼▼ ДИАГНОСТИКА МОБИЛЬНОЙ ОТПРАВКИ — удалить после отладки ▼▼▼ */
+  let diagBox = document.getElementById("_diag");
+  if (!diagBox) {
+    diagBox = document.createElement("div");
+    diagBox.id = "_diag";
+    diagBox.style.cssText = "position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;font:12px/1.4 monospace;padding:10px;z-index:99999;max-height:40vh;overflow:auto;white-space:pre-wrap;";
+    document.body.appendChild(diagBox);
+  }
+  diagBox.textContent = "Отправка...\nURL: " + CONFIG.FORM_ENDPOINT + "\nUA: " + navigator.userAgent;
+
+  const t0 = performance.now();
   try {
     const formData = new FormData();
     formData.append("name", name);
@@ -609,13 +620,20 @@ async function submitOrder(e) {
       body: formData,
     });
 
+    const ms = Math.round(performance.now() - t0);
+    let body = "";
+    try { body = await res.text(); } catch(_) { body = "(не удалось прочитать)"; }
+    diagBox.textContent += `\n\nСТАТУС: ${res.status} ${res.statusText}\nВРЕМЯ: ${ms} мс\nОТВЕТ: ${body}`;
+
     if (!res.ok) throw new Error("submit failed: " + res.status);
 
-    const data = await res.json().catch(() => null);
+    let data = null;
+    try { data = JSON.parse(body); } catch(_) {}
     if (data && data.ok === false) {
       throw new Error(data.error || "Сервис отклонил отправку");
     }
 
+    diagBox.textContent += "\n\n✅ УСПЕХ — форма отправлена";
     document.getElementById("checkoutForm").style.display = "none";
     document.getElementById("successView").style.display = "block";
     cart = {};
@@ -623,6 +641,9 @@ async function submitOrder(e) {
     renderCart();
     renderGrid();
   } catch (err) {
+    const ms = Math.round(performance.now() - t0);
+    diagBox.textContent += `\n\n❌ ОШИБКА: ${err.message}\nВРЕМЯ: ${ms} мс`;
+
     errorBox.textContent =
       "Не удалось отправить заявку автоматически. Пожалуйста, позвоните или напишите нам напрямую: " +
       CONFIG.CONTACT_PHONE;
@@ -631,6 +652,7 @@ async function submitOrder(e) {
     submitBtn.disabled = false;
     submitBtn.textContent = "Отправить заявку";
   }
+  /* ▲▲▲ ДИАГНОСТИКА МОБИЛЬНОЙ ОТПРАВКИ — удалить после отладки ▲▲▲ */
 }
 
 /* ---------- Скачать прайс (генерация Excel в браузере) ---------- */
