@@ -2,8 +2,8 @@
    НАСТРОЙКИ МАГАЗИНА — редактируйте здесь
    ========================================================= */
 const CONFIG = {
-  // Вставьте сюда ваш адрес формы с formspree.io (см. инструкцию в README.md)
-  FORMSPREE_ENDPOINT: "https://formspree.io/f/mgawanvg",
+  // Эндпоинт для отправки заявок (FormSubmit.co — безлимитные отправки, без регистрации)
+  FORM_ENDPOINT: "https://formsubmit.co/ajax/jaks8@list.ru",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
@@ -596,15 +596,17 @@ async function submitOrder(e) {
   submitBtn.textContent = "Отправка...";
 
   try {
-    const res = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+    const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
         name,
         phone,
-        email,
+        _replyto: email,
         message,
         _subject: `Заказ с сайта — ${fmt(total)} ₽ (${name})`,
+        _captcha: "false",
+        _template: "table",
       }),
     });
 
