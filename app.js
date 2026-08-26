@@ -596,19 +596,21 @@ async function submitOrder(e) {
   submitBtn.textContent = "Отправка...";
 
   try {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("phone", phone);
-    formData.append("_replyto", email);
-    formData.append("message", message);
-    formData.append("_subject", `Заказ с сайта — ${fmt(total)} ₽ (${name})`);
-    formData.append("_captcha", "false");
-    formData.append("_template", "table");
-
     const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
-      headers: { Accept: "application/json" },
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        phone,
+        _replyto: email,
+        message,
+        _subject: `Заказ с сайта — ${fmt(total)} ₽ (${name})`,
+        _captcha: "false",
+        _template: "table",
+      }),
     });
 
     if (!res.ok) throw new Error("submit failed: " + res.status);
