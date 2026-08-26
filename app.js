@@ -2,8 +2,8 @@
    НАСТРОЙКИ МАГАЗИНА — редактируйте здесь
    ========================================================= */
 const CONFIG = {
-  // Google Apps Script → Telegram (работает из России без VPN)
-  FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbwog-a92VDKGPxlmERy6MKeqeSx6T_p3dvRDgNvY2qadc9mIGmpNupF_unoD_d8UGMSag/exec",
+  // Google Apps Script → Telegram (ТЕСТ: сломанный endpoint для проверки фоллбэка)
+  FORM_ENDPOINT: "https://script.google.com/macros/s/BROKEN_TEST_ENDPOINT/exec",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
