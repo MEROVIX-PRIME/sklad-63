@@ -2,8 +2,8 @@
    НАСТРОЙКИ МАГАЗИНА — редактируйте здесь
    ========================================================= */
 const CONFIG = {
-  // Google Apps Script → Telegram (ТЕСТ: сломанный endpoint для проверки фоллбэка)
-  FORM_ENDPOINT: "https://script.google.com/macros/s/BROKEN_TEST_ENDPOINT/exec",
+  // Google Apps Script → Telegram (работает из России без VPN)
+  FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbwog-a92VDKGPxlmERy6MKeqeSx6T_p3dvRDgNvY2qadc9mIGmpNupF_unoD_d8UGMSag/exec",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
@@ -449,7 +449,7 @@ function renderCart() {
     );
   }
 
-  document.getElementById("cartCount").textContent = items.reduce((s, i) => s + i.qty, 0);
+  document.getElementById("cartCount").textContent = items.length;
 
   const discountRate = getDiscountRate(subtotal);
   const discountAmount = subtotal * discountRate;
@@ -519,6 +519,8 @@ function openCheckout() {
   document.getElementById("checkoutOverlay").classList.add("open");
   document.getElementById("checkoutForm").style.display = "block";
   document.getElementById("successView").style.display = "none";
+  document.getElementById("fallbackView").style.display = "none";
+  document.body.style.overflow = "hidden";
 
   const tier2Box = document.getElementById("benefitChoiceBox");
   tier2Box.style.display = subtotal >= CONFIG.DISCOUNT_TIER_2.from ? "block" : "none";
@@ -529,6 +531,7 @@ function openCheckout() {
 
 function closeCheckout() {
   document.getElementById("checkoutOverlay").classList.remove("open");
+  document.body.style.overflow = "";
 }
 
 function renderTkOptions() {
