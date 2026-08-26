@@ -614,14 +614,28 @@ async function submitOrder(e) {
     renderCart();
     renderGrid();
   } catch (err) {
+    /* ---- Показываем фоллбэк-окно ---- */
+    document.getElementById("checkoutForm").style.display = "none";
+    const fallback = document.getElementById("fallbackView");
+    fallback.style.display = "block";
+
     /* ---- Генерируем мини-прайс с товарами из корзины ---- */
-    let downloadBtn = "";
+    const dlBtn = document.getElementById("fallbackDownloadBtn");
     try {
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet("Заказ");
       ws.columns = [
         { width: 45 }, { width: 12 }, { width: 14 }, { width: 14 },
       ];
+
+      /* Контакты магазина сверху */
+      const info = ws.addRow([`${CONFIG.SHOP_NAME} — заказ с сайта`]);
+      info.font = { bold: true, size: 14 };
+      ws.mergeCells(info.number, 1, info.number, 4);
+      ws.addRow([`Телефон: ${CONFIG.CONTACT_PHONE} (${CONFIG.CONTACT_MESSENGER_NOTE})`]);
+      ws.addRow([`Почта: ${CONFIG.CONTACT_EMAIL}`]);
+      ws.addRow([]);
+
       const hdr = ws.addRow(["Товар", "Кол-во", "Цена", "Сумма"]);
       hdr.font = { bold: true };
       hdr.eachCell((c) => {
@@ -648,20 +662,20 @@ async function submitOrder(e) {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const blobUrl = URL.createObjectURL(blob);
-      downloadBtn =
-        `<br><br><a href="${blobUrl}" download="заказ-${new Date().toISOString().slice(0, 10)}.xlsx" ` +
-        `style="display:inline-block;padding:12px 24px;background:#1a73e8;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold;">` +
-        `Скачать заказ (Excel)</a>`;
+
+      dlBtn.style.display = "block";
+      dlBtn.onclick = () => {
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = `заказ-${new Date().toISOString().slice(0, 10)}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      };
     } catch (xlsErr) {
       console.warn("Не удалось сформировать Excel:", xlsErr);
+      dlBtn.style.display = "none";
     }
-
-    errorBox.innerHTML =
-      "Что-то пошло не так, возможно ваш оператор блокирует отправку заявки.<br><br>" +
-      "Скачайте файл с вашим заказом и отправьте его на почту " +
-      `<b>${CONFIG.CONTACT_EMAIL}</b> или в Telegram / WhatsApp: <b>89967323696</b>` +
-      downloadBtn;
-    errorBox.style.display = "block";
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "Отправить заявку";
@@ -1006,6 +1020,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.id === "checkoutOverlay") closeCheckout();
   });
   document.getElementById("successCloseBtn").addEventListener("click", closeCheckout);
+  document.getElementById("fallbackCloseBtn").addEventListener("click", () => {
+    document.getElementById("fallbackView").style.display = "none";
+    document.getElementById("checkoutForm").style.display = "block";
+    closeCheckout();
+  });
 
   document.querySelectorAll('input[name="delivery"]').forEach((r) =>
     r.addEventListener("change", toggleDeliveryFields)
