@@ -2,8 +2,9 @@
    НАСТРОЙКИ МАГАЗИНА — редактируйте здесь
    ========================================================= */
 const CONFIG = {
-  // Эндпоинт для отправки заявок (FormSubmit.co — активирован)
-  FORM_ENDPOINT: "https://formsubmit.co/ajax/919vin@gmail.com",
+  // Telegram Bot API — заявки приходят в Telegram
+  TELEGRAM_BOT_TOKEN: "8636717309:AAExVYL3FrBDvWKGxy8Ocw4uGnLd5JAqJFw",
+  TELEGRAM_CHAT_ID: "1865483754",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
@@ -596,26 +597,20 @@ async function submitOrder(e) {
   submitBtn.textContent = "Отправка...";
 
   try {
-    const params = new URLSearchParams();
-    params.append("name", name);
-    params.append("phone", phone);
-    params.append("_replyto", email);
-    params.append("message", message);
-    params.append("_subject", `Заказ с сайта — ${fmt(total)} ₽ (${name})`);
-    params.append("_captcha", "false");
-    params.append("_template", "table");
-
-    const res = await fetch(CONFIG.FORM_ENDPOINT, {
+    const tgUrl = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const res = await fetch(tgUrl, {
       method: "POST",
-      headers: { Accept: "application/json" },
-      body: params,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: CONFIG.TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: "HTML",
+      }),
     });
 
-    if (!res.ok) throw new Error("HTTP " + res.status);
-
-    const data = await res.json().catch(() => null);
-    if (data && data.success === "false") {
-      throw new Error(data.message || "Сервис отклонил отправку");
+    if (!res.ok) {
+      const errData = await res.json().catch(() => null);
+      throw new Error(errData?.description || "HTTP " + res.status);
     }
 
     document.getElementById("checkoutForm").style.display = "none";
