@@ -614,13 +614,53 @@ async function submitOrder(e) {
     renderCart();
     renderGrid();
   } catch (err) {
-    if (err.name === "TypeError") {
-      errorBox.textContent =
-        "Нет соединения с сервером. Проверьте интернет или позвоните нам: " + CONFIG.CONTACT_PHONE;
-    } else {
-      errorBox.textContent =
-        "Не удалось отправить заявку (" + err.message + "). Позвоните или напишите нам: " + CONFIG.CONTACT_PHONE;
+    /* ---- Генерируем мини-прайс с товарами из корзины ---- */
+    let downloadBtn = "";
+    try {
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet("Заказ");
+      ws.columns = [
+        { width: 45 }, { width: 12 }, { width: 14 }, { width: 14 },
+      ];
+      const hdr = ws.addRow(["Товар", "Кол-во", "Цена", "Сумма"]);
+      hdr.font = { bold: true };
+      hdr.eachCell((c) => {
+        c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFF5C400" } };
+      });
+      for (const it of items) {
+        ws.addRow([it.product.name, it.qty, it.product.price, it.product.price * it.qty]);
+      }
+      ws.addRow([]);
+      const tRow = ws.addRow(["ИТОГО", "", "", total]);
+      tRow.font = { bold: true, size: 13 };
+      if (effectiveDiscountRate > 0) {
+        ws.addRow([`Скидка ${Math.round(effectiveDiscountRate * 100)}%`, "", "", -discountAmount]);
+      }
+      ws.addRow([`Доставка: ${deliveryLabel}`]);
+      ws.addRow([]);
+      ws.addRow([`Покупатель: ${name}`]);
+      ws.addRow([`Телефон: ${phone}`]);
+      ws.addRow([`Email: ${email}`]);
+      if (comment) ws.addRow([`Комментарий: ${comment}`]);
+
+      const buf = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buf], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const blobUrl = URL.createObjectURL(blob);
+      downloadBtn =
+        `<br><br><a href="${blobUrl}" download="заказ-${new Date().toISOString().slice(0, 10)}.xlsx" ` +
+        `style="display:inline-block;padding:12px 24px;background:#1a73e8;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold;">` +
+        `Скачать заказ (Excel)</a>`;
+    } catch (xlsErr) {
+      console.warn("Не удалось сформировать Excel:", xlsErr);
     }
+
+    errorBox.innerHTML =
+      "Что-то пошло не так, возможно ваш оператор блокирует отправку заявки.<br><br>" +
+      "Скачайте файл с вашим заказом и отправьте его на почту " +
+      `<b>${CONFIG.CONTACT_EMAIL}</b> или в Telegram / WhatsApp: <b>89967323696</b>` +
+      downloadBtn;
     errorBox.style.display = "block";
   } finally {
     submitBtn.disabled = false;
