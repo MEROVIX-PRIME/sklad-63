@@ -507,10 +507,12 @@ function renderProgress(subtotal) {
 function openDrawer() {
   document.getElementById("overlay").classList.add("open");
   document.getElementById("drawer").classList.add("open");
+  document.body.style.overflow = "hidden";
 }
 function closeDrawer() {
   document.getElementById("overlay").classList.remove("open");
   document.getElementById("drawer").classList.remove("open");
+  document.body.style.overflow = "";
 }
 
 /* ---------- Checkout modal ---------- */
