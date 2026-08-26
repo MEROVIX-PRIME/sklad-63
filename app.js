@@ -596,24 +596,22 @@ async function submitOrder(e) {
   submitBtn.textContent = "Отправка...";
 
   try {
+    const params = new URLSearchParams();
+    params.append("name", name);
+    params.append("phone", phone);
+    params.append("_replyto", email);
+    params.append("message", message);
+    params.append("_subject", `Заказ с сайта — ${fmt(total)} ₽ (${name})`);
+    params.append("_captcha", "false");
+    params.append("_template", "table");
+
     const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        phone,
-        _replyto: email,
-        message,
-        _subject: `Заказ с сайта — ${fmt(total)} ₽ (${name})`,
-        _captcha: "false",
-        _template: "table",
-      }),
+      headers: { Accept: "application/json" },
+      body: params,
     });
 
-    if (!res.ok) throw new Error("submit failed: " + res.status);
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
     const data = await res.json().catch(() => null);
     if (data && data.success === "false") {
@@ -628,8 +626,7 @@ async function submitOrder(e) {
     renderGrid();
   } catch (err) {
     errorBox.textContent =
-      "Не удалось отправить заявку автоматически. Пожалуйста, позвоните или напишите нам напрямую: " +
-      CONFIG.CONTACT_PHONE;
+      "Ошибка: " + err.message + ". Позвоните или напишите нам: " + CONFIG.CONTACT_PHONE;
     errorBox.style.display = "block";
   } finally {
     submitBtn.disabled = false;
