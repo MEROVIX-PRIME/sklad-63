@@ -2,9 +2,8 @@
    НАСТРОЙКИ МАГАЗИНА — редактируйте здесь
    ========================================================= */
 const CONFIG = {
-  // Telegram Bot API — заявки приходят в Telegram
-  TELEGRAM_BOT_TOKEN: "8636717309:AAExVYL3FrBDvWKGxy8Ocw4uGnLd5JAqJFw",
-  TELEGRAM_CHAT_ID: "1865483754",
+  // Google Apps Script → Telegram (работает из России без VPN)
+  FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbwog-a92VDKGPxlmERy6MKeqeSx6T_p3dvRDgNvY2qadc9mIGmpNupF_unoD_d8UGMSag/exec",
 
   // Ссылка на Google-таблицу, опубликованную как CSV (см. README.md, раздел
   // "Живые остатки"). Пока не настроено — сайт работает на статичных
@@ -597,20 +596,15 @@ async function submitOrder(e) {
   submitBtn.textContent = "Отправка...";
 
   try {
-    const tgUrl = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const res = await fetch(tgUrl, {
+    const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: CONFIG.TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: "HTML",
-      }),
+      body: JSON.stringify({ message }),
+      redirect: "follow",
     });
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => null);
-      throw new Error(errData?.description || "HTTP " + res.status);
+    const data = await res.json().catch(() => null);
+    if (!data || !data.success) {
+      throw new Error((data && data.error) || "Сервер вернул ошибку");
     }
 
     document.getElementById("checkoutForm").style.display = "none";
@@ -620,8 +614,13 @@ async function submitOrder(e) {
     renderCart();
     renderGrid();
   } catch (err) {
-    errorBox.textContent =
-      "Ошибка: " + err.message + ". Позвоните или напишите нам: " + CONFIG.CONTACT_PHONE;
+    if (err.name === "TypeError") {
+      errorBox.textContent =
+        "Нет соединения с сервером. Проверьте интернет или позвоните нам: " + CONFIG.CONTACT_PHONE;
+    } else {
+      errorBox.textContent =
+        "Не удалось отправить заявку (" + err.message + "). Позвоните или напишите нам: " + CONFIG.CONTACT_PHONE;
+    }
     errorBox.style.display = "block";
   } finally {
     submitBtn.disabled = false;
