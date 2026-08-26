@@ -955,6 +955,11 @@ function escapeAttr(str) {
 }
 
 /* ---------- Init ---------- */
+/* ---------- Компактная шапка при прокрутке (мобильные) ---------- */
+window.addEventListener("scroll", () => {
+  document.querySelector(".site-header").classList.toggle("scrolled", window.scrollY > 10);
+}, { passive: true });
+
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("shopName").textContent = CONFIG.SHOP_NAME;
   document.getElementById("contactPhone").textContent = CONFIG.CONTACT_PHONE;

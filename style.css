@@ -675,4 +675,15 @@ footer .brand{color:#fff;margin-bottom:8px;}
   .modal-overlay{padding:0;align-items:stretch;}
   .modal{border-radius:0;max-width:none;min-height:100vh;display:flex;flex-direction:column;}
   .modal-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+  /* ---- Компактная шапка при прокрутке ---- */
+  .site-header.scrolled .brand{display:none;}
+  .site-header.scrolled .header-inner{
+    flex-wrap:nowrap;gap:8px;padding:8px 12px;
+  }
+  .site-header.scrolled .header-search{min-width:0;flex:1;}
+  .site-header.scrolled .header-search input{padding:8px 12px;font-size:14px;}
+  .site-header.scrolled .price-btn{padding:7px 10px;font-size:12px;}
+  .site-header.scrolled .cart-label{display:none;}
+  .site-header.scrolled .cart-btn{padding:8px 10px;font-size:13px;gap:4px;}
 }
