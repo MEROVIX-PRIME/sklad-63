@@ -586,8 +586,17 @@ async function submitOrder(e) {
     .map((i) => `• ${i.product.name} — ${i.qty} шт × ${fmt(i.product.price)} ₽ = ${fmt(i.product.price * i.qty)} ₽`)
     .join("\n");
 
+  const now = new Date();
+  const pad2 = (n) => String(n).padStart(2, "0");
+  const orderId =
+    pad2(now.getDate()) + pad2(now.getMonth() + 1) + String(now.getFullYear()).slice(2) +
+    "-" + pad2(now.getHours()) + pad2(now.getMinutes());
+  const orderDate =
+    pad2(now.getDate()) + "." + pad2(now.getMonth() + 1) + "." + now.getFullYear() +
+    ", " + pad2(now.getHours()) + ":" + pad2(now.getMinutes());
+
   const message =
-    `Новый заказ с сайта ${CONFIG.SHOP_NAME}\n\n` +
+    `Новый заказ № ${orderId} с сайта ${CONFIG.SHOP_NAME}\n\n` +
     `Товары:\n${itemsText}\n\n` +
     `Сумма товаров: ${fmt(subtotal)} ₽\n` +
     (effectiveDiscountRate > 0 ? `Скидка: ${Math.round(effectiveDiscountRate * 100)}% (− ${fmt(discountAmount)} ₽)\n` : "") +
@@ -603,7 +612,32 @@ async function submitOrder(e) {
   try {
     const res = await fetch(CONFIG.FORM_ENDPOINT, {
       method: "POST",
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({
+        message,
+        // Данные для письма-подтверждения покупателю (отправляет Apps Script)
+        order: {
+          id: orderId,
+          date: orderDate,
+          name,
+          phone,
+          email,
+          comment,
+          delivery: deliveryLabel,
+          items: items.map((i) => ({ name: i.product.name, qty: i.qty, price: i.product.price })),
+          subtotal,
+          discountPercent: Math.round(effectiveDiscountRate * 100),
+          discountAmount,
+          total,
+          shop: {
+            name: CONFIG.SHOP_NAME,
+            site: location.hostname || "sklad-63.site",
+            phone: CONFIG.CONTACT_PHONE,
+            email: CONFIG.CONTACT_EMAIL,
+            messenger: CONFIG.CONTACT_MESSENGER_NOTE,
+            city: CONFIG.CITY,
+          },
+        },
+      }),
       redirect: "follow",
     });
 
